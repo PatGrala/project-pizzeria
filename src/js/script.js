@@ -82,14 +82,14 @@
     }
     initAccordion(){
       const thisProduct = this;
-      thisProduct.accordionTrigger.addEventListener('click', function(event) {
+      thisProduct.accordionTrigger.addEventListener('click', function (event) {
         event.preventDefault();
         const activeProduct = document.querySelector(select.all.menuProductsActive);
         if (activeProduct != null && activeProduct != thisProduct.element) {
           activeProduct.classList.remove(classNames.menuProduct.wrapperActive);
         }
         thisProduct.element.classList.toggle(classNames.menuProduct.wrapperActive);
-      })
+      });
     }
     initOrderForm() {
       const thisProduct = this;
@@ -117,6 +117,16 @@
         const param = thisProduct.data.params[paramId];
         for (let optionId in param.options) {
           const option = param.options[optionId];
+
+          if (formData[paramId] && formData[paramId].includes(optionId)) {
+            if (option.default != true)
+              price = price + option.price;
+
+          } else {
+            if (option.default == true) {
+              price = price - option.price
+            }
+          }
         }
       }
       thisProduct.priceElem.innerHTML = price;
