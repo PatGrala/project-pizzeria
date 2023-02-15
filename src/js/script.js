@@ -60,6 +60,8 @@
       this.renderInMenu();
       this.getElements();
       this.initAccordion();
+      this.initOrderForm();
+      this.processOrder();
       console.log('new Product', thisProduct);
     }
     renderInMenu() {
@@ -78,20 +80,49 @@
       thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
     }
-    initAccordion()
-    {
+    initAccordion(){
       const thisProduct = this;
       thisProduct.accordionTrigger.addEventListener('click', function(event) {
         event.preventDefault();
         const activeProduct = document.querySelector(select.all.menuProductsActive);
-        console.log(activeProduct);
         if (activeProduct != null && activeProduct != thisProduct.element) {
           activeProduct.classList.remove(classNames.menuProduct.wrapperActive);
         }
         thisProduct.element.classList.toggle(classNames.menuProduct.wrapperActive);
       })
     }
+    initOrderForm() {
+      const thisProduct = this;
+      thisProduct.form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        thisProduct.processOrder();
+      });
+
+      for (let input of thisProduct.formInputs) {
+        input.addEventListener('change', function () {
+          thisProduct.processOrder();
+        });
+      }
+
+      thisProduct.cartButton.addEventListener('click', function (event) {
+        event.preventDefault();
+        thisProduct.processOrder();
+      });
+    }
+    processOrder() {
+      const thisProduct = this;
+      const formData = utils.serializeFormToObject(thisProduct.form);
+      let price = thisProduct.data.price;
+      for (let paramId in thisProduct.data.params) {
+        const param = thisProduct.data.params[paramId];
+        for (let optionId in param.options) {
+          const option = param.options[optionId];
+        }
+      }
+      thisProduct.priceElem.innerHTML = price;
+    }
   }
+
   const app = {
     initMenu: function () {
       const thisApp = this;
