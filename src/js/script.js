@@ -71,6 +71,11 @@
     cart: {
       defaultDeliveryFee: 20,
     },
+    db: {
+      url: '//localhost:3131',
+      products: 'products',
+      orders: 'orders',
+    },
   };
 
   const templates = {
@@ -81,7 +86,7 @@
   class Product {
     constructor(id, data) {
       const thisProduct = this;
-      this.id = id;
+      thisProduct.id = id;
       this.data = data;
       this.renderInMenu();
       this.getElements();
@@ -387,8 +392,8 @@
       thisCartProduct.dom.remove = thisCartProduct.dom.wrapper.querySelector(select.cartProduct.remove);
     }
 
-    initAmountWidget(){
-    const thisCartProduct = this;
+    initAmountWidget() {
+      const thisCartProduct = this;
 
       thisCartProduct.amountWidget = new AmountWidget(thisCartProduct.dom.amountWidget);
       thisCartProduct.dom.amountWidget.addEventListener('updated', function () {
@@ -414,10 +419,10 @@
     initActions() {
       const thisCartProduct = this;
 
-      thisCartProduct.dom.edit.addEventListener('click', function () { })
+      thisCartProduct.dom.edit.addEventListener('click', function () { });
       thisCartProduct.dom.remove.addEventListener('click', function () {
         thisCartProduct.remove();
-      })
+      });
     }
   }
 
@@ -426,13 +431,24 @@
       const thisApp = this;
       console.log('thisApp.data', thisApp.data);
       for (let productData in thisApp.data.products) {
-        new Product(productData, thisApp.data.products[productData]);
+        new Product(thisApp.data.products[productData].id, thisApp.data.products[productData]);
       }
     },
 
     initData: function () {
       const thisApp = this;
-      thisApp.data = dataSource;
+      thisApp.data = {};
+      const url = settings.db.url + '/' + settings.db.products;
+      fetch(url)
+        .then(function (rawResponse) {
+          return rawResponse.json();
+        })
+        .then(function (parsedResponse) {
+
+          thisApp.data.products = parsedResponse;
+          thisApp.initMenu();
+          console.log('parsedResponse', parsedResponse);
+        });
     },
 
     initCart: function () {
@@ -450,7 +466,6 @@
       console.log('settings:', settings);
       console.log('templates:', templates);
       thisApp.initData();
-      thisApp.initMenu();
       thisApp.initCart();
     },
   };
