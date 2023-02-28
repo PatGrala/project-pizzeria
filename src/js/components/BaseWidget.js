@@ -6,6 +6,8 @@ class BaseWidget {
     thisWidget.dom.wrapper = wrapperElement;
 
     thisWidget.correctValue = initialValue;
+
+    console.log(thisWidget);
   }
 
   get value() {
@@ -18,11 +20,12 @@ class BaseWidget {
     const thisWidget = this;
     const newValue = thisWidget.parseValue(value);
 
-    if (thisWidget.correctValue !== newValue && thisWidget.IsValid(newValue)) {
+    if (thisWidget.correctValue !== newValue && thisWidget.isValid(newValue)) {
       thisWidget.correctValue = newValue;
+
+      thisWidget.announce();
     }
 
-    thisWidget.announce();
     thisWidget.renderValue();
   }
 
@@ -36,7 +39,7 @@ class BaseWidget {
     return parseInt(value);
   }
 
-  IsValid(value) {
+  isValid(value) {
     return !isNaN(value);
   }
 
